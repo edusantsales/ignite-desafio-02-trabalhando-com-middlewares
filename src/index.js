@@ -13,7 +13,7 @@ function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers
   const user = users.find(user => user.username === username)
   if (!user) {
-    return response.status(404)
+    return response.status(404).json({ error: "User not found!" })
   }
   request.user = user
   return next()
@@ -25,7 +25,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
     return next()
   }
   if (!user.pro && user.todos.length === 10) {
-    return response.status(403)
+    return response.status(403).json({ error: "User plan pro!" })
   }
   return next()
 }
@@ -35,15 +35,15 @@ function checksTodoExists(request, response, next) {
   const { id } = request.params
   const user = users.find(user => user.username === username)
   if (!user) {
-    return response.status(404)
+    return response.status(404).json({ error: "User not found!" })
   }
   const isUuid = validate(id)
   if (!isUuid) {
-    return response.status(400)
+    return response.status(400).json({ error: "Id is not a Uuid valid!" })
   }
   const todo = user.todos.find(todo => todo.id === id)
   if (!todo) {
-    return response.status(404)
+    return response.status(404).json({ error: "Todo not found!" })
   }
   request.user = user
   request.todo = todo
